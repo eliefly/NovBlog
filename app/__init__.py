@@ -8,11 +8,11 @@ __mtime__ = '11/8/16'
 
 from flask import Flask, render_template
 from flask_bootstrap import Bootstrap
-from flask_pymongo import PyMongo 
+from flask_mongoengine import MongoEngine 
 from config import config
 
 bootstrap = Bootstrap()
-mongo = PyMongo()
+db = MongoEngine()
 
 
 def create_app(config_name):
@@ -24,7 +24,7 @@ def create_app(config_name):
 
     # 初始化扩展
     bootstrap.init_app(app)
-    mongo.init_app(app)
+    db.init_app(app)
 
     # 注册蓝本
     from .main import main as main_blueprint
