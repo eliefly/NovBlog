@@ -1,0 +1,6 @@
+{% extends "auth_base.html" %}
+
+{% block content %}
+<h1>Hello, 
+{% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}</h1>
+{% endblock %}

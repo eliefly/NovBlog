@@ -21,14 +21,12 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     MONGODB_SETTINGS = {'DB': 'NovBlogDev'}
-    # MONGO_DBNAME = 'NovBlogDev'
 
 
 
 class TestingConfig(Config):
     TESTING = True
     MONGODB_SETTINGS = {'DB': 'NovBlogTest'}
-    # MONGO_DBNAME = 'NovBlogTest'
 
 
 
