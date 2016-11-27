@@ -6,9 +6,11 @@
 
 {% block content %}
 <div class="page-header">
-	<h1>Login</h1>
+	<h1>登录</h1>
 </div>
 <div class="text-left">
 	{{ wtf.quick_form(form) }}
+	<br>
+	<p>没有账户?<a href="{{ url_for('auth.register') }}">  点击注册</a></p>
 </div>
 {% endblock %}
