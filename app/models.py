@@ -1,6 +1,7 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from . import db, login_manager
+from datetime import datetime
 
 ROLES = (('admin', 'admin'),
         ('editor', 'editor'),
@@ -11,6 +12,9 @@ class User(db.Document):
     email = db.StringField(max_length=64, required=True)
     password_hash = db.StringField(required=True)
     role = db.StringField(max_length=32, default='reader', choices=ROLES)
+    is_superuser = db.BooleanField(default=False)
+    create_time = db.DateTimeField(default=datetime.now)
+    last_login = db.DateTimeField(default=datetime.now)
 
     @property
     def password(self):
@@ -41,6 +45,9 @@ class User(db.Document):
             return self.username
         except AttributeError:
             raise NotImplementedError('No `username` attribute - override `get_id`')
+
+    def __str__(self):
+        return 'User %r' % self.username
         
 
 # flask-login回调函数。如果找到用户返回用会对象，否则应返回None

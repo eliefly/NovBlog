@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, ValidationError
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, ValidationError, \
+                RadioField, SelectField
 from wtforms.validators import Required, Length, Email, Regexp, EqualTo
-from ..models import User
+from ..models import User, ROLES
 
 class LoginForm(FlaskForm):
     username = StringField('用户名', validators=[Required()])
@@ -16,6 +17,7 @@ class RegistrationForm(FlaskForm):
                             Regexp('^[A-Za-z_][A-Za-z0-9_.]*$', 0, '用户名必须是字母数字和下划线组成')])
     password = PasswordField('密码', validators=[Required(), EqualTo('password2', message='两次密码必须一致')])
     password2 = PasswordField('确认密码', validators=[Required()])
+    role = SelectField('角色权限', choices=ROLES)
     submit = SubmitField('注册')
 
     def validate_email(self, field):

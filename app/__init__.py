@@ -11,9 +11,12 @@ from flask_bootstrap import Bootstrap
 from flask_mongoengine import MongoEngine 
 from config import config
 from flask_login import LoginManager
+from flask_principal import Principal
 
+# 初始化扩展
 bootstrap = Bootstrap()
 db = MongoEngine()
+principals = Principal()
 
 # 初始化flask-login
 login_manager = LoginManager()
@@ -33,6 +36,7 @@ def create_app(config_name):
     bootstrap.init_app(app)
     db.init_app(app)
     login_manager.init_app(app)
+    principals.init_app(app)
 
     # 注册main蓝本程序
     from .main import main as main_blueprint
