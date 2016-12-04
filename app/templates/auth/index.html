@@ -1,6 +1,7 @@
 {% extends "auth_base.html" %}
 
+{% block title %}用户首页{% endblock %} 
 {% block content %}
-<h1>Hello, 
-{% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}</h1>
+<h1>当前用户是： 
+{% if current_user.is_authenticated %}{{ current_user.username }}{% else %}匿名用户{% endif %}</h1>
 {% endblock %}

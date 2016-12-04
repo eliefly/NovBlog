@@ -1,10 +1,17 @@
 from flask import render_template, redirect, url_for, flash, request, current_app, session, abort, g
 from . import auth
-from .forms import LoginForm, RegistrationForm
+from .forms import LoginForm, RegistrationForm, EditUserProfileForm
 from ..models import User
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_principal import Principal, Identity, AnonymousIdentity, identity_changed
 from .permissions import admin_permission, editor_permission, reader_permission
+
+
+@auth.before_app_request
+def before_request():
+    '''更新用户访问时间'''
+    if current_user.is_authenticated:
+        current_user.ping()
 
 
 @auth.route('/')
@@ -16,13 +23,14 @@ def index():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.objects.get(username=form.username.data)
+        user = User.objects.get_or_404(username=form.username.data)
         if user is not None and user.verify_password(form.password.data):
             login_user(user, form.remember_me.data)
 
             # Tell Flask-Principal the identity changed
             identity_changed.send(current_app._get_current_object(),
                                     identity=Identity(user.username))
+                                    # identity=Identity(str(user.id)))
 
             if current_user.is_authenticated:
                 flash('%s login successfully.' % (current_user.username))
@@ -70,3 +78,29 @@ def admin():
     # if not g.identity.can(admin_permission):
     #     abort(401)
     return render_template('auth/test_admin.html')
+
+
+@auth.route('/profile')
+@login_required
+def user_profile():
+    # user = User.objects(username=current_user.username).first()
+    # if user is None:
+    #     abort(404)
+    return render_template('auth/user_profile.html', user=current_user)
+
+
+@auth.route('/edit-profile', methods=['GET', 'POST'])
+@login_required
+def edit_profile():
+    form = EditUserProfileForm()
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        current_user.about_me = form.about_me.data
+        current_user.save()
+        flash('修改个人资料成功！')
+        return redirect(url_for('auth.user_profile'))
+    form.username.data = current_user.username
+    form.email.data = current_user.email
+    form.about_me.data = current_user.about_me
+    return render_template('auth/edit_profile.html', form=form)

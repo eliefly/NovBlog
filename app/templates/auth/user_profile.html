@@ -1,0 +1,21 @@
+{% extends "auth_base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}用户信息{% endblock %}
+
+
+{% block content %}
+<div class="page-header">
+	<h1>{{ user.username }}用户信息</h1>
+</div>
+<div>
+	<p>用户名：{{ user.username }}</p>
+	<p>邮箱：{{ user.email }}</p>
+	<p>权限：{{ user.role }}</p>
+	<p>介绍：{{ user.about_me }}</p>
+	<p>ID:{{ user.id }}</p>
+	<p>建立时间：{{ user.create_time.strftime('%Y年%m月%d日%X') }}</p>
+	<p>上次访问: {{ user.last_login.strftime('%Y年%m月%d日%X') }}</p>
+	<a class="btn btn-default" href="{{ url_for('auth.edit_profile') }}">编辑个人信息</a>
+</div>
+{% endblock %}

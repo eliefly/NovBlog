@@ -12,6 +12,7 @@ class User(db.Document):
     email = db.StringField(max_length=64, required=True)
     password_hash = db.StringField(required=True)
     role = db.StringField(max_length=32, default='reader', choices=ROLES)
+    about_me = db.StringField(max_length=256)
     is_superuser = db.BooleanField(default=False)
     create_time = db.DateTimeField(default=datetime.now)
     last_login = db.DateTimeField(default=datetime.now)
@@ -46,6 +47,11 @@ class User(db.Document):
         except AttributeError:
             raise NotImplementedError('No `username` attribute - override `get_id`')
 
+    def ping(self):
+        '''更新用户最后的访问时间'''
+        self.last_login = datetime.now()
+        self.save()
+
     def __str__(self):
         return 'User %r' % self.username
         
@@ -59,3 +65,21 @@ def load_user(username):
     except User.DoesNotExist:
         user = None
     return user
+
+
+
+
+
+# class ContentResource(Resource):
+#     document = Content
+  
+# class Post(db.Document):
+#     title = db.StringField(max_length=120, required=True)
+#     description = db.StringField(max_length=120, required=False)
+#     author = db.ReferenceField(User)
+#     editor = db.ReferenceField(User)
+#     tags = db.ListField(db.StringField(max_length=30))
+#     user_lists = db.ListField(db.SafeReferenceField(User))
+#     sections = db.ListField(db.EmbeddedDocumentField(Content))
+#     content = db.EmbeddedDocumentField(Content)
+#     is_published = db.BooleanField()

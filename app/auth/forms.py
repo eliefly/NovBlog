@@ -27,3 +27,11 @@ class RegistrationForm(FlaskForm):
     def validate_username(self, field):
         if User.objects.filter(username=field.data).count() > 0:
             raise ValidationError('用户名已被使用')
+
+
+class EditUserProfileForm(FlaskForm):
+    username = StringField('用户名', validators=[Required(), Length(1, 64),
+                            Regexp('^[A-Za-z_][A-Za-z0-9_.]*$', 0, '用户名必须是字母数字和下划线组成')])
+    email = StringField('邮箱', validators=[Required(), Length(1, 64), Email()])
+    about_me = StringField('介绍', validators=[Length(0, 256)])
+    submit = SubmitField('保存')

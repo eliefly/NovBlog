@@ -1,0 +1,15 @@
+{% extends "auth_base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}用户资料设置{% endblock %}
+
+
+{% block content %}
+<div class="page-header">
+	<h1>用户资料</h1>
+</div>
+<div class="text-left">
+	{{ wtf.quick_form(form) }}
+	<br>
+</div>
+{% endblock %}
