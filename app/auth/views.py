@@ -1,10 +1,12 @@
-from flask import render_template, redirect, url_for, flash, request, current_app, session, abort, g
+from flask import render_template, redirect, url_for, flash, request, current_app, \
+            session, abort, g, make_response
 from . import auth
-from .forms import LoginForm, RegistrationForm, EditUserProfileForm
+from .forms import LoginForm, RegistrationForm, EditUserProfileForm, AvatarForm
 from ..models import User
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_principal import Principal, Identity, AnonymousIdentity, identity_changed
 from .permissions import admin_permission, editor_permission, reader_permission
+from werkzeug import secure_filename
 
 
 @auth.before_app_request
@@ -103,4 +105,42 @@ def edit_profile():
     form.username.data = current_user.username
     form.email.data = current_user.email
     form.about_me.data = current_user.about_me
-    return render_template('auth/edit_profile.html', form=form)
+    return render_template('auth/edit_profile.html', form=form, user=current_user)
+
+    # 在shell下操作上传图像ok
+    # >>> u = User.objects.get(username='novblog')
+    # >>> im = open('/home/eliefly/Pictures/1.jpg', 'rb')
+    # >>> u.avatar.put(im, content_type='image/jpeg')
+    # >>> u.avatar
+    # <ImageGridFsProxy: 584837afcaffbc1656e0e25d>
+    # >>> u.save()
+
+@auth.route('/static/avatar/<username>')
+def avatar(username):
+    '''为显示头像，新增头像的 URL，嵌入到 img tag 的 src 属性中'''
+    user = User.objects.get_or_404(username=username)
+    img = user.avatar.read()
+    response = make_response(img)
+    response.headers['Content-Type'] = 'image/jpeg'
+    return response
+
+@auth.route('/avatar', methods=('GET', 'POST'))
+@login_required
+def upload():
+    form = AvatarForm()
+    if form.validate_on_submit():
+        filename = secure_filename(form.avatar.data.filename)
+        if len(filename) > 0:   # there is file is selected.
+            ext = filename.split('.')[1]
+            if ext not in current_app.config['AVATER_FORMAT']:
+                flash("请上传'jpg', 'png', 'jpeg', 'bmp'格式图像！")
+            else:
+                avatar_data = form.avatar.data
+                if current_user.avatar is not None:
+                    current_user.avatar.replace(avatar_data, content_type='image/jpeg')
+                else:
+                    current_user.avatar.put(avatar_data, content_type='image/jpeg')
+                current_user.save()
+                flash('变更头像成功！')
+                return redirect(url_for('auth.edit_profile'))
+    return render_template('auth/upload.html', form=form, user=current_user)

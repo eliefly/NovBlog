@@ -1,8 +1,9 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, ValidationError, \
-                RadioField, SelectField
+                RadioField, SelectField, FileField
 from wtforms.validators import Required, Length, Email, Regexp, EqualTo
 from ..models import User, ROLES
+
 
 class LoginForm(FlaskForm):
     username = StringField('用户名', validators=[Required()])
@@ -35,3 +36,8 @@ class EditUserProfileForm(FlaskForm):
     email = StringField('邮箱', validators=[Required(), Length(1, 64), Email()])
     about_me = StringField('介绍', validators=[Length(0, 256)])
     submit = SubmitField('保存')
+
+
+class AvatarForm(FlaskForm):
+    avatar = FileField('头像')
+    submit = SubmitField('上传')

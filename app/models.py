@@ -13,6 +13,8 @@ class User(db.Document):
     password_hash = db.StringField(required=True)
     role = db.StringField(max_length=32, default='reader', choices=ROLES)
     about_me = db.StringField(max_length=256)
+    avatar = db.ImageField(size=(128, 128, True))
+    # avatar = db.FileField()  # 0.8版本falsk-mongoengine bug不能上传图像出错，参见Document and fix connection code #280
     is_superuser = db.BooleanField(default=False)
     create_time = db.DateTimeField(default=datetime.now)
     last_login = db.DateTimeField(default=datetime.now)

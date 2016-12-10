@@ -12,6 +12,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
+    AVATER_FORMAT = list(['jpg', 'png', 'jpeg', 'bmp'])
 
     @staticmethod
     def init_app(app):
@@ -20,8 +21,9 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    MONGODB_SETTINGS = {'DB': 'NovBlogDev'}
-
+    MONGODB_SETTINGS = {'db': 'NovBlogDev',
+                        'ALIAS':'default',
+                        'host': 'localhost'}
 
 
 class TestingConfig(Config):

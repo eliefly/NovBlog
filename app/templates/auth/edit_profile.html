@@ -8,6 +8,17 @@
 <div class="page-header">
 	<h1>用户资料</h1>
 </div>
+<div class="text-center">
+	{% if user.avatar %}
+		<a href="{{ url_for('auth.user_profile') }}">
+			<img id="user-avatar" src="{{ url_for('auth.avatar', username=user.username) }}">
+		</a>
+	{% else %}
+		<img id="user-avatar" src="/static/img/user.png">
+	{% endif %}
+	<p><a href="{{ url_for('auth.upload') }}">更新头像</a></p>
+	<br>
+</div>
 <div class="text-left">
 	{{ wtf.quick_form(form) }}
 	<br>
