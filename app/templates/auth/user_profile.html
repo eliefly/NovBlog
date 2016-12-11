@@ -25,5 +25,5 @@
     <p>建立时间：{{ user.create_time.strftime('%Y年%m月%d日%X') }}</p>
     <p>上次访问: {{ user.last_login.strftime('%Y年%m月%d日%X') }}</p>
 </div>
-<a class="btn btn-default" href="{{ url_for('auth.edit_profile') }}">编辑个人信息</a>
+<a class="btn btn-default" href="{{ url_for('auth.edit_profile', username=user.username) }}">编辑个人信息</a>
 {% endblock %}

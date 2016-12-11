@@ -82,30 +82,29 @@ def admin():
     return render_template('auth/test_admin.html')
 
 
-@auth.route('/profile')
+@auth.route('/profile/<username>')
 @login_required
-def user_profile():
-    # user = User.objects(username=current_user.username).first()
-    # if user is None:
-    #     abort(404)
-    return render_template('auth/user_profile.html', user=current_user)
+def user_profile(username):
+    user = User.objects.get_or_404(username=username)
+    return render_template('auth/user_profile.html', user=user)
 
 
-@auth.route('/edit-profile', methods=['GET', 'POST'])
+@auth.route('/edit-profile/<username>', methods=['GET', 'POST'])
 @login_required
-def edit_profile():
-    form = EditUserProfileForm()
+def edit_profile(username):
+    user = User.objects.get_or_404(username=username)
+    form = EditUserProfileForm(user=user)
     if form.validate_on_submit():
-        current_user.username = form.username.data
-        current_user.email = form.email.data
-        current_user.about_me = form.about_me.data
-        current_user.save()
+        user.username = form.username.data
+        user.email = form.email.data
+        user.about_me = form.about_me.data
+        user.save()
         flash('修改个人资料成功！')
         return redirect(url_for('auth.user_profile'))
-    form.username.data = current_user.username
-    form.email.data = current_user.email
-    form.about_me.data = current_user.about_me
-    return render_template('auth/edit_profile.html', form=form, user=current_user)
+    form.username.data = user.username
+    form.email.data = user.email
+    form.about_me.data = user.about_me
+    return render_template('auth/edit_profile.html', form=form, user=user)
 
     # 在shell下操作上传图像ok
     # >>> u = User.objects.get(username='novblog')
@@ -124,9 +123,11 @@ def avatar(username):
     response.headers['Content-Type'] = 'image/jpeg'
     return response
 
-@auth.route('/avatar', methods=('GET', 'POST'))
+
+@auth.route('/avatar/<username>', methods=('GET', 'POST'))
 @login_required
-def upload():
+def upload(username):
+    user = User.objects.get_or_404(username=username)
     form = AvatarForm()
     if form.validate_on_submit():
         filename = secure_filename(form.avatar.data.filename)
@@ -136,11 +137,11 @@ def upload():
                 flash("请上传'jpg', 'png', 'jpeg', 'bmp'格式图像！")
             else:
                 avatar_data = form.avatar.data
-                if current_user.avatar is not None:
-                    current_user.avatar.replace(avatar_data, content_type='image/jpeg')
+                if user.avatar is not None:
+                    user.avatar.replace(avatar_data, content_type='image/jpeg')
                 else:
-                    current_user.avatar.put(avatar_data, content_type='image/jpeg')
-                current_user.save()
+                    user.avatar.put(avatar_data, content_type='image/jpeg')
+                user.save()
                 flash('变更头像成功！')
-                return redirect(url_for('auth.edit_profile'))
-    return render_template('auth/upload.html', form=form, user=current_user)
+                return redirect(url_for('auth.edit_profile', username=user.username))
+    return render_template('auth/upload.html', form=form, user=user)

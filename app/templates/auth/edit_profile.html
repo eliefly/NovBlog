@@ -10,13 +10,13 @@
 </div>
 <div class="text-center">
 	{% if user.avatar %}
-		<a href="{{ url_for('auth.user_profile') }}">
+		<a href="{{ url_for('auth.user_profile', username=user.username) }}">
 			<img id="user-avatar" src="{{ url_for('auth.avatar', username=user.username) }}">
 		</a>
 	{% else %}
 		<img id="user-avatar" src="/static/img/user.png">
 	{% endif %}
-	<p><a href="{{ url_for('auth.upload') }}">更新头像</a></p>
+	<p><a href="{{ url_for('auth.upload', username=user.username) }}">更新头像</a></p>
 	<br>
 </div>
 <div class="text-left">

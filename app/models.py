@@ -12,7 +12,7 @@ class User(db.Document):
     email = db.StringField(max_length=64, required=True)
     password_hash = db.StringField(required=True)
     role = db.StringField(max_length=32, default='reader', choices=ROLES)
-    about_me = db.StringField(max_length=256)
+    about_me = db.StringField(max_length=256, default='这家伙很懒什么都没留下...')
     avatar = db.ImageField(size=(128, 128, True))
     # avatar = db.FileField()  # 0.8版本falsk-mongoengine bug不能上传图像出错，参见Document and fix connection code #280
     is_superuser = db.BooleanField(default=False)
@@ -53,6 +53,19 @@ class User(db.Document):
         '''更新用户最后的访问时间'''
         self.last_login = datetime.now()
         self.save()
+
+    @staticmethod
+    def insert_test_user():
+        u1 = User(username='novblog1', email='novblog1@example.com')
+        u2 = User(username='novblog2', email='novblog2@example.com')
+        u3 = User(username='admin', email='admin@example.ocm', role='admin')
+        u1.password = 'novblog1'
+        u2.password = 'novblog2'
+        u3.password = 'admin'
+        u1.save()
+        u2.save()
+        u3.save()
+
 
     def __str__(self):
         return 'User %r' % self.username

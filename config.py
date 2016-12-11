@@ -13,6 +13,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
     AVATER_FORMAT = list(['jpg', 'png', 'jpeg', 'bmp'])
+    STATIC_FOLDER = '/home/eliefly/PycharmProjects/NovBlog/app/static'
 
     @staticmethod
     def init_app(app):

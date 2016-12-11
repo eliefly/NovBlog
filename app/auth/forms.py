@@ -37,6 +37,20 @@ class EditUserProfileForm(FlaskForm):
     about_me = StringField('介绍', validators=[Length(0, 256)])
     submit = SubmitField('保存')
 
+    def __init__(self, user, *args, **kwargs):
+        super(EditUserProfileForm, self).__init__(*args, **kwargs)
+        self.user = user
+
+    def validate_email(self, field):
+        if field.data != self.user.email and \
+                User.objects.filter(email=field.data).count() > 0:
+            raise ValidationError('邮箱已经被使用！')
+
+    def validate_username(self, field):
+        if field.data != self.user.username and \
+                User.objects.filter(username=field.data).count() > 0:
+            raise ValidationError('用户名已经被使用！')
+
 
 class AvatarForm(FlaskForm):
     avatar = FileField('头像')

@@ -1,7 +1,14 @@
 {% extends "auth_base.html" %}
 
 {% block title %}用户首页{% endblock %} 
+
 {% block content %}
-<h1>当前用户是： 
-{% if current_user.is_authenticated %}{{ current_user.username }}{% else %}匿名用户{% endif %}</h1>
+<h1>当前登录用户：
+
+{% if current_user.is_authenticated %}
+	<a href="{{ url_for('auth.user_profile', username=current_user.username) }}">{{ current_user.username }}</a>
+{% else %}
+	匿名用户
+{% endif %}
+</h1>
 {% endblock %}
