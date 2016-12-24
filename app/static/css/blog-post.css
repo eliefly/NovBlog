@@ -24,3 +24,47 @@ footer .copyright {
 .user-profile {
 /*background-color: DarkCyan;*/
 }
+
+/*mian index.html--begin*/
+img.post-img{
+	width: 50px;
+	height: 50px;
+}
+
+ul.posts li.post {
+    padding: 8px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+ul.posts li.post:hover {
+    background-color: #f0f0f0;
+}
+
+div.post-avatar {
+    position: absolute;
+}
+
+ul.posts {
+    list-style-type: none;
+    padding: 5px;
+    margin: 16px 0px 0px 0px;
+    border-top: 1px solid #e0e0e0;
+}
+div.post-content {
+    margin-left: 60px;
+    min-height: 50px;
+}
+
+span.post-author{
+    font-weight: bold;
+}
+
+div.post-title{
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+div.post-date{
+	margin-top: 4px;
+}
+/*mian index.html--end*/

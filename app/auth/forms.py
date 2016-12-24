@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, ValidationError, \
-                RadioField, SelectField, FileField
+                RadioField, SelectField, FileField, TextAreaField, HiddenField
 from wtforms.validators import Required, Length, Email, Regexp, EqualTo
-from ..models import User, ROLES
+from ..models import User, ROLES, post_status
 
 
 class LoginForm(FlaskForm):
@@ -55,3 +55,14 @@ class EditUserProfileForm(FlaskForm):
 class AvatarForm(FlaskForm):
     avatar = FileField('头像')
     submit = SubmitField('上传')
+
+
+class PostForm(FlaskForm):
+    title = StringField('标题', validators=[Required()])
+    category = StringField('类别')
+    tags = StringField('标签')
+    content = TextAreaField('内容')
+    status = SelectField('状态', choices=post_status)
+    post_id = HiddenField('post_id')
+    submit = SubmitField('提交')
+

@@ -1,6 +1,6 @@
 {% extends "auth_base.html" %}
 
-{% block title %}用户首页{% endblock %} 
+{% block title %}{{ title }}{% endblock %} 
 
 {% block content %}
 <h1>当前登录用户：
@@ -11,4 +11,7 @@
 	匿名用户
 {% endif %}
 </h1>
+<div class="text-right">
+	<p><a href="{{ url_for('main.index') }}">返回博客页面</a></p>
+</div>
 {% endblock %}

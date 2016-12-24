@@ -43,9 +43,9 @@ def on_identity_loaded(sender, identity):
 
     # reader_permission.allows(identity) 返回布尔类型 Whether the identity can access this permission.
     # identity.allows_read = reader_permission.allows(identity)
-    identity.allows_read = identity.can(reader_permission)
-    identity.allows_edit = editor_permission.allows(identity)
-    identity.allowd_admin = admin_permission.allows(identity)
+    identity.allow_read = identity.can(reader_permission)
+    identity.allow_edit = editor_permission.allows(identity)
+    identity.allow_admin = admin_permission.allows(identity)
 
 
 

@@ -48,14 +48,23 @@
                                 <li><a href="{{ url_for('auth.edit_profile', username=current_user.username) }}">个人设置</a></li>
                             </ul>
                         </li>
-                        {% if g.identity.allowd_admin %}
+                        {% if g.identity.allow_edit %}
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">管理员<span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">文章<span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="{{ url_for('auth.admin') }}">test_admin</a></li>
+                                <li><a href="{{ url_for('auth.new_post', username=current_user.username) }}">新建博客</a></li>
                                 <li><a href="#">###</a></li>
                             </ul>
                         </li>
+                        {% endif %}
+                        {% if g.identity.allow_admin %}
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">管理员<span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="{{ url_for('auth.admin') }}">test_admin</a></li>
+                                    <li><a href="#">###</a></li>
+                                </ul>
+                            </li>
                         {% endif %}
                     </ul>
                     <ul class="nav navbar-nav navbar-right">

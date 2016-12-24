@@ -59,12 +59,18 @@ class User(db.Document):
         u1 = User(username='novblog1', email='novblog1@example.com')
         u2 = User(username='novblog2', email='novblog2@example.com')
         u3 = User(username='admin', email='admin@example.ocm', role='admin')
+        u4 = User(username='editor1', email='editor1@example.com', role='editor')
+        u5 = User(username='editor2', email='editor2@example.com', role='editor')
         u1.password = 'novblog1'
         u2.password = 'novblog2'
         u3.password = 'admin'
+        u4.password = 'editor1'
+        u5.password = 'editor2'
         u1.save()
         u2.save()
         u3.save()
+        u4.save()
+        u5.save()
 
 
     def __str__(self):
@@ -81,20 +87,70 @@ def load_user(username):
         user = None
     return user
 
+class Comment(db.EmbeddedDocument):
+    content = db.StringField()
+    name = db.StringField(max_length=120)
+
+post_status = (('草稿', '草稿'), ('发布', '发布'))
+
+class Post(db.Document):
+    title = db.StringField(max_length=120, required=True)
+    # CASCADE (2) - Deletes the documents associated with the reference.
+    author = db.ReferenceField(User, reverse_delete_rule=2)
+    category = db.StringField(max_length=64)    
+    tags = db.ListField(db.StringField(max_length=30))
+    content = db.StringField()
+    status = db.StringField(required=True, choices=post_status)
+    publish_time = db.DateTimeField(default=datetime.now)
+    modifly_time = db.DateTimeField(default=datetime.now)
+    comments = db.ListField(db.EmbeddedDocumentField(Comment))
+
+    # 想法：Post和图片可视作一对多关系，Image可直接在Post中放一个类似comments的字段
+    # Images = db.ListField(db.EmbeddedDocumentField(PostImage))
+
+    meta = {'allow_inheritance': True,
+            'ordering': ['-publish_time']}
+
+    @staticmethod
+    def generate_fake(count=100):
+        '''生成虚拟博客文章'''
+        from random import seed, randint
+        import forgery_py
+
+        seed()
+        editor_user = User.objects(role='editor')
+        user_count = editor_user.count()
+        for i in range(count):
+            u = editor_user[randint(0, user_count-1)]
+            post = Post(title='blog title ' + str(i), author=u)
+            post.content = forgery_py.lorem_ipsum.sentences(randint(1, 50))
+            post.category = ['web', 'linux', 'python'][randint(0,2)]
+            post.tags = ['html', 'css', 'mongodb', 'mysql', 'javascript', 'flask'][randint(0, 5):randint(0, 5)]
+            post.status = ['草稿', '发布'][randint(0, 1)]
+            post.save()
 
 
-
-
-# class ContentResource(Resource):
-#     document = Content
-  
-# class Post(db.Document):
-#     title = db.StringField(max_length=120, required=True)
-#     description = db.StringField(max_length=120, required=False)
-#     author = db.ReferenceField(User)
-#     editor = db.ReferenceField(User)
-#     tags = db.ListField(db.StringField(max_length=30))
-#     user_lists = db.ListField(db.SafeReferenceField(User))
-#     sections = db.ListField(db.EmbeddedDocumentField(Content))
-#     content = db.EmbeddedDocumentField(Content)
-#     is_published = db.BooleanField()
+# 先实现简单的博客内容，content直接放在Post类中。后续在考虑其他内容。
+# class TextPost(Post):
+#     content = db.StringField()
+#
+#
+#     @staticmethod
+#     def insert_textpost():
+#         post1 = TextPost(title='Fun with MongoEngine', author='john')
+#         post1.content = 'Took a look at MongoEngine today, looks pretty cool.'
+#         post1.tags = ['mongodb', 'mongoengine']
+#         post1.save()
+#
+# class ImagePost(Post):
+#     image_path = db.StringField()
+#
+# class LinkPost(Post):
+#     link_url = db.StringField()
+#
+#     @staticmethod
+#     def insert_linkpost():
+#         post2 = LinkPost(title='MongoEngine Documentation', author='ross')
+#         post2.link_url = 'http://docs.mongoengine.com/'
+#         post2.tags = ['mongoengine']
+#         post2.save()

@@ -1,8 +1,8 @@
 from flask import render_template, redirect, url_for, flash, request, current_app, \
             session, abort, g, make_response
 from . import auth
-from .forms import LoginForm, RegistrationForm, EditUserProfileForm, AvatarForm
-from ..models import User
+from .forms import LoginForm, RegistrationForm, EditUserProfileForm, AvatarForm, PostForm
+from ..models import User, Post
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_principal import Principal, Identity, AnonymousIdentity, identity_changed
 from .permissions import admin_permission, editor_permission, reader_permission
@@ -18,7 +18,7 @@ def before_request():
 
 @auth.route('/')
 def index():
-    return render_template('auth/index.html', current_user=current_user)
+    return render_template('auth/index.html', current_user=current_user, title='管理首页')
 
 
 @auth.route('/login', methods=['GET', 'POST'])
@@ -39,7 +39,7 @@ def login():
             next = request.args.get('next')
             return redirect(next or url_for('auth.index'))
         flash('Invalid username or password.')
-    return render_template('auth/login.html', form=form, current_user=current_user)
+    return render_template('auth/login.html', form=form, current_user=current_user, title='用户登录')
 
 
 @auth.route('/logout')
@@ -69,7 +69,7 @@ def register():
         user.role = form.role.data
         user.save()
         flash('注册成功，现在可以登录了!')
-    return render_template('auth/register.html', form=form)
+    return render_template('auth/register.html', form=form, title='用户注册')
 
 
 @auth.route('/admin')
@@ -104,7 +104,7 @@ def edit_profile(username):
     form.username.data = user.username
     form.email.data = user.email
     form.about_me.data = user.about_me
-    return render_template('auth/edit_profile.html', form=form, user=user)
+    return render_template('auth/edit_profile.html', form=form, user=user, title='用户资料设置')
 
     # 在shell下操作上传图像ok
     # >>> u = User.objects.get(username='novblog')
@@ -144,4 +144,26 @@ def upload(username):
                 user.save()
                 flash('变更头像成功！')
                 return redirect(url_for('auth.edit_profile', username=user.username))
-    return render_template('auth/upload.html', form=form, user=user)
+    return render_template('auth/upload.html', form=form, user=user, title='上传头像')
+
+
+@auth.route('/newpost/<username>', methods=['GET', 'POST'])
+@login_required
+@editor_permission.require(http_exception=401)
+def new_post(username):
+    user = User.objects.get_or_404(username=username)
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(content=form.content.data)
+        post.author = user
+        post.title = form.title.data
+        post.status = form.status.data
+        post.category = form.category.data.strip() if form.category.data.strip() else None
+        post.tags = [tag.strip() for tag in form.tags.data.split(',')] if form.tags.data else None
+        post.save()
+        if post.status == '草稿':
+            flash('文章已保存到为草稿！')
+        elif post.status == '发布':
+            flash('文章发布成功！')
+        return redirect(url_for('auth.index'))
+    return render_template('auth/new_post.html', form=form, user=user, title='新建博客')

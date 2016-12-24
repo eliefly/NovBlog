@@ -11,7 +11,7 @@ from flask import render_template, session, redirect, url_for, flash
 from .. import db
 from . import main
 from .forms import NameForm
-
+from ..models import User, Post
 
 @main.route('/test', methods=['GET', 'POST'])
 def test():
@@ -23,4 +23,15 @@ def test():
             flash('Looks like you have changed your name!')
         session['name'] = form.name.data
         return redirect(url_for('main.test'))
-    return render_template('test.html', form=form, name=session.get('name'))
+    return render_template('main/test.html', form=form, name=session.get('name'))
+
+
+@main.route('/')
+def index():
+    posts = Post.objects().all()
+    return render_template('main/index.html', posts=posts, title='首页')
+
+
+@main.route('/post')
+def get_post():
+    return render_template('main/post.html', title='首页')
