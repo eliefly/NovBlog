@@ -2,26 +2,13 @@
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
     <h1>所有文章</h1>
-    <ul class="posts">
-        {% for post in posts %}
-            <div class="post-title"><a href="#">{{ post.title }}</a></div>            
-            <li class="post">
-                <div class="post-avatar">
-                    <a href="#">
-                        {% if post.author.avatar %}
-                            <img width="50" height="50" class="post-img" src="{{ url_for('auth.avatar', username=post.author.username) }}">
-                        {% else %}
-                            <img  width="50" height="50" class="post-img" src="/static/img/user.png">
-                        {% endif %}
-                    </a>
-                </div>
-                <div class="post-content">
-                    <div class="post-body">{{ post.content[1:100] + '...' }}</div>
-                    <div class="post-date"><span class="post-author"><a href="#">{{ post.author.username }}</a></span>{{ '  发布于: ' + post.publish_time.strftime('%Y-%m-%d %X') }}</div>
-                </div>
-            </li>
-        {% endfor %}
-    </ul>
+    {% include '_posts.html' %}
+    {% if pagination %}
+        <div class="pagination">
+        {% import '_pagination.html' as macros %}
+            {{ macros.pagination_widget(pagination, 'main.index') }}
+        </div>
+    {% endif %}
 {% endblock %}
 {% block slider %}
     <!-- Blog Search Well -->

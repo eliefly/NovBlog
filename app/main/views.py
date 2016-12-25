@@ -7,7 +7,7 @@ __mtime__ = '11/8/16'
 """
 
 
-from flask import render_template, session, redirect, url_for, flash
+from flask import render_template, session, redirect, url_for, flash, request, current_app
 from .. import db
 from . import main
 from .forms import NameForm
@@ -28,8 +28,14 @@ def test():
 
 @main.route('/')
 def index():
-    posts = Post.objects().all()
-    return render_template('main/index.html', posts=posts, title='首页')
+    '''分页导航显示文章'''
+    page = request.args.get('page', 1, type=int)
+    pagination = Post.objects.order_by('-publish_time').paginate(
+                page, per_page=current_app.config['POSTS_PER_PAGE'], error_out=False)
+    posts = pagination.items
+
+    # posts = Post.objects().order_by('-publish_time').all()
+    return render_template('main/index.html', posts=posts, title='首页', pagination=pagination)
 
 
 @main.route('/post')

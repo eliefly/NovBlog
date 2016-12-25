@@ -112,7 +112,7 @@ class Post(db.Document):
             'ordering': ['-publish_time']}
 
     @staticmethod
-    def generate_fake(count=100):
+    def generate_fake(count=30):
         '''生成虚拟博客文章'''
         from random import seed, randint
         import forgery_py
