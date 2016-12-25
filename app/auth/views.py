@@ -157,13 +157,17 @@ def new_post(username):
         post = Post(content=form.content.data)
         post.author = user
         post.title = form.title.data
-        post.status = form.status.data
+        # post.status = form.status.data
         post.category = form.category.data.strip() if form.category.data.strip() else None
-        post.tags = [tag.strip() for tag in form.tags.data.split(',')] if form.tags.data else None
-        post.save()
-        if post.status == '草稿':
-            flash('文章已保存到为草稿！')
-        elif post.status == '发布':
+        post.tags = [tag.strip() for tag in form.tags.data.split(',')] if form.tags.data else None        
+
+        if request.form.get('publish'):
+            post.status = '草稿'
+            post.save()
             flash('文章发布成功！')
+        elif request.form.get('draft'):
+            post.status = '发布'
+            post.save()
+            flash('文章已保存到为草稿！')
         return redirect(url_for('auth.index'))
     return render_template('auth/new_post.html', form=form, user=user, title='新建博客')

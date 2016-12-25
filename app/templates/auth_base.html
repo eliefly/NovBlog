@@ -16,6 +16,8 @@
             <link href="{{ url_for('static', filename='css/blog-post.css') }}" rel="stylesheet">
             <!-- highlight for code -->
             <link href="{{ url_for('static', filename='css/solarized_dark.css') }}" rel="stylesheet">
+
+            {% block css %}{% endblock %}
             <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
             <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
             <!--[if lt IE 9]>
@@ -96,6 +98,8 @@
             </div>
             <!-- /.row -->
             <hr>
+            {% block newpost %}
+            {% endblock %}
             <!-- Footer -->
             <footer>
                 <div class="container">
@@ -112,5 +116,8 @@
         <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
         <!-- Bootstrap Core JavaScript -->
         <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+        <!-- Custom Theme JavaScript -->
+        {% block js %}
+        {% endblock %}
     </body>
 </html>
