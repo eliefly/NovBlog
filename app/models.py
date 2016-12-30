@@ -2,7 +2,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from . import db, login_manager
 from datetime import datetime
+from markdown2 import markdown
+import bleach
 
+# 角色属性权限
 ROLES = (('admin', 'admin'),
         ('editor', 'editor'),
         ('reader', 'reader'))
@@ -93,13 +96,31 @@ class Comment(db.EmbeddedDocument):
 
 post_status = (('草稿', '草稿'), ('发布', '发布'))
 
+
+def get_clean_html_content(html_content):
+    allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
+                    'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul', 'span'
+                    'h1', 'h2', 'h3', 'h4', 'h5', 'p', 'hr', 'img']
+
+    allowed_attrs = {'*': ['class'],
+                    'a': ['href', 'rel', 'name'],
+                    'img': ['alt', 'src', 'title'],}
+
+    allowed_styles = ['color', 'background-color', 'font-weight', 'font-style']
+
+
+    html_content = bleach.linkify(bleach.clean(html_content, tags=allowed_tags, attributes=allowed_attrs, styles=allowed_styles, strip=True))
+    return html_content
+
+
 class Post(db.Document):
     title = db.StringField(max_length=120, required=True)
     # CASCADE (2) - Deletes the documents associated with the reference.
     author = db.ReferenceField(User, reverse_delete_rule=2)
     category = db.StringField(max_length=64)    
     tags = db.ListField(db.StringField(max_length=30))
-    content = db.StringField()
+    content = db.StringField(required=True)
+    content_html = db.StringField(required=True)
     # status = db.StringField(required=True, choices=post_status)
     status = db.StringField(required=True)
     publish_time = db.DateTimeField(default=datetime.now)
@@ -111,6 +132,19 @@ class Post(db.Document):
 
     meta = {'allow_inheritance': True,
             'ordering': ['-publish_time']}
+
+    def save(self, allow_set_time=False, *args, **kwargs):
+        ''' 覆写Post.save()方法，保存post时生成contnet_html字段'''
+        if not allow_set_time:
+            now = datetime.now()
+            if not self.publish_time:
+                self.publish_time = now
+            self.modifly_time = now
+
+        self.content_html = markdown(self.content, extras=['code-friendly', 'fenced-code-blocks', 'tables']).encode('utf-8')
+        self.content_html = get_clean_html_content(self.content_html)
+        return super(Post, self).save(*args, **kwargs)
+
 
     @staticmethod
     def generate_fake(count=30):

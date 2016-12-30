@@ -37,7 +37,12 @@ def index():
     # posts = Post.objects().order_by('-publish_time').all()
     return render_template('main/index.html', posts=posts, title='首页', pagination=pagination)
 
+@main.route('/example')
+def post_example():
+    return render_template('main/example.html', title='NovBlog')
 
-@main.route('/post')
-def get_post():
-    return render_template('main/post.html', title='首页')
+
+@main.route('/post/<id>')
+def get_post(id):
+    post = Post.objects(id=id).first()
+    return render_template('main/post.html', post=post, title='NovBlog文章')

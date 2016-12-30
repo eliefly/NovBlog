@@ -1,6 +1,6 @@
 <ul class="posts">
     {% for post in posts %}
-        <div class="post-title"><a href="#">{{ post.title }}</a></div>
+        <div class="post-title"><a href="{{ url_for('main.get_post', id=post.id) }}">{{ post.title }}</a></div>
         <li class="post">
             <div class="post-avatar">
                 <a href="#">
@@ -12,7 +12,7 @@
                 </a>
             </div>
             <div class="post-content">
-                <div class="post-body">{{ post.content[1:200] + '...' }}</div>
+                <div class="post-body">{{ post.content[:200] + '...' }}</div>
                 <div class="post-date"><span class="post-author"><a href="#">{{ post.author.username }}</a></span>{{ '  发布于: ' + post.publish_time.strftime('%Y-%m-%d %X') }}</div>
             </div>
         </li>

@@ -16,7 +16,6 @@
             <link href="{{ url_for('static', filename='css/blog-post.css') }}" rel="stylesheet">
             <!-- highlight for code -->
             <link href="{{ url_for('static', filename='css/solarized_dark.css') }}" rel="stylesheet">
-
             {% block css %}{% endblock %}
             <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
             <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -51,13 +50,13 @@
                             </ul>
                         </li>
                         {% if g.identity.allow_edit %}
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">文章<span class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="{{ url_for('auth.new_post', username=current_user.username) }}">新建博客</a></li>
-                                <li><a href="#">###</a></li>
-                            </ul>
-                        </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">文章<span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="{{ url_for('auth.new_post', username=current_user.username) }}">新建博客</a></li>
+                                    <li><a href="#">###</a></li>
+                                </ul>
+                            </li>
                         {% endif %}
                         {% if g.identity.allow_admin %}
                             <li class="dropdown">
@@ -95,29 +94,35 @@
                     {% block content %}
                     {% endblock %}
                 </div>
-            </div>
-            <!-- /.row -->
-            <hr>
-            {% block newpost %}
-            {% endblock %}
-            <!-- Footer -->
-            <footer>
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                            <p class="copyright text-muted text-center">Copyright &copy; NovBlog 2016</p>
-                        </div>
+        </div>
+        <!-- /.row -->
+        <hr>
+        {% block newpost %}
+        {% endblock %}
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                        <p class="copyright text-muted text-center">Copyright &copy; NovBlog 2016</p>
                     </div>
                 </div>
-            </footer>
-        </div>
-        <!-- /.container -->
-        <!-- jQuery -->
-        <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
-        <!-- Bootstrap Core JavaScript -->
-        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-        <!-- Custom Theme JavaScript -->
-        {% block js %}
-        {% endblock %}
-    </body>
+            </div>
+        </footer>
+    </div>
+    <!-- /.container -->
+    <!-- jQuery -->
+    <script src="{{ url_for('static', filename='js/lib/jquery.js') }}"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{{ url_for('static', filename='js/lib/bootstrap.min.js') }}"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="{{ url_for('static', filename='js/lib/highlight.pack.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $('pre').each(function (i, block) {
+            hljs.highlightBlock(block);
+            });
+        });
+    </script>
+</body>
 </html>
