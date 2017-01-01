@@ -1,0 +1,76 @@
+{% extends "auth_base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block css %}
+    <link href="//cdn.bootcss.com/bootstrap-markdown/2.9.0/css/bootstrap-markdown.min.css" rel="stylesheet">
+{% endblock %}
+{% block post %}
+<div class="row">
+    <h3>{{ head }}</h3>
+    <hr>
+    <!-- <div class="col-md-10"> -->
+    <!-- <h1>New Post</h1> -->
+    
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th style="width: 30%">标题</th>
+                <th style="width: 10%">作者</th>
+                <th style="width: 10%">发布时间</th>
+                <th style="width: 10%">修改时间</th>
+                <th style="width: 5%">发布状态</th>
+                <th style="width: 5%">编辑</th>
+                <th style="width: 5%">删除</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for post in posts %}
+            <tr>
+                <td>
+                    <a href="{{ url_for('main.get_post', id=post.id) }}">{{ post.title }}</a>
+                </td> 
+                <td>
+                    <a href="{{ url_for('auth.user_profile', username=post.author.username) }}">{{ post.author.username }}</a>
+                </td> 
+                <td>{{ post.publish_time.strftime('%Y-%m-%d') }}</td> 
+                <td>{{ post.modifly_time.strftime('%Y-%m-%d') }}</td> 
+                <td>{{ post.status }}</td> 
+                <td>
+                    <a href="{{ url_for('auth.edit_post', postid=post.id) }}"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> </a>
+                </td> 
+                <td>
+                    <a href="{{ url_for('auth.delete_post', postid=post.id) }}"  class="del-post"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> </a>
+                </td> 
+            </tr>
+        {% endfor %}            
+        </tbody>
+    </table>
+    {% if pagination %}
+        <div class="pagination">
+            {% import '_pagination.html' as macros %}
+            {{ macros.pagination_widget(pagination, endpoint, user.username) }}
+        </div>
+    {% endif %}
+{% endblock %}
+{% block js %}
+<!--     <script">
+        $('.del-post').on('click', function (event) {
+            var url = $(this).attr('href');
+            url = url + '&ajax=true';
+            bootbox.confirm("Are you sure?", function(result) {
+              if(result){
+                $.ajax({
+                    url: url,
+                    type: 'DELETE',
+                    success: function(result){
+                        location.reload();
+                    }
+
+                })
+                }
+            });
+            return false;
+          });
+    </script> -->
+{% endblock %}

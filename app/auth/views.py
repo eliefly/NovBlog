@@ -162,12 +162,90 @@ def new_post(username):
         post.tags = [tag.strip() for tag in form.tags.data.split(',')] if form.tags.data else None        
 
         if request.form.get('publish'):
-            post.status = '草稿'
+            post.status = '发布'
             post.save()
             flash('文章发布成功！')
         elif request.form.get('draft'):
-            post.status = '发布'
+            post.status = '草稿'
             post.save()
             flash('文章已保存到为草稿！')
         return redirect(url_for('auth.index'))
     return render_template('auth/new_post.html', form=form, user=user, title='新建博客')
+
+
+@auth.route('/managepost/<username>', methods=['GET', 'POST'])
+@login_required
+@editor_permission.require(http_exception=401)
+def manage_post(username):
+    user = User.objects.get_or_404(username=username)
+    page = request.args.get('page', 1, type=int)
+    pagination = Post.objects(author=user, status='发布').order_by('-publish_time').paginate(
+                page, per_page=current_app.config['POSTS_PER_PAGE'], error_out=False)
+    posts = pagination.items
+
+    # posts = Post.objects(author=user, status='发布').order_by('-publish_time')
+
+    return render_template('auth/manage_post.html', posts=posts, user=user, pagination=pagination, endpoint='auth.manage_post', 
+                            title='我的随笔', head=('%s的随笔' % username))
+
+
+@auth.route('/draft/<username>', methods=['GET', 'POST'])
+@login_required
+@editor_permission.require(http_exception=401)
+def draft_post(username):
+    user = User.objects.get_or_404(username=username)
+    page = request.args.get('page', 1, type=int)
+    pagination = Post.objects(author=user, status='草稿').order_by('-publish_time').paginate(
+                page, per_page=current_app.config['POSTS_PER_PAGE'], error_out=False)
+    posts = pagination.items
+
+    # posts = Post.objects(author=user, status='草稿').order_by('-publish_time')
+    return render_template('auth/manage_post.html', posts=posts, user=user, pagination=pagination, endpoint='auth.draft_post', 
+                            title='草稿箱', head=('%s的草稿箱' % username))
+
+
+@auth.route('/managepost/delete/<postid>', methods=['GET', 'DELETE'])
+@login_required
+@editor_permission.require(http_exception=401)
+def delete_post(postid):
+    post = Post.objects(id=postid).first()
+    username = post.author.username
+    post.delete()
+
+    flash('删除成功！')
+
+    # if request.args.get('ajax'):
+    #     return 'success'
+    if post.status == '草稿':
+        return redirect(url_for('auth.draft_post', username=username))
+    elif post.status == '发布':
+        return redirect(url_for('auth.manage_post', username=username))
+
+@auth.route('/managepost/edit/<postid>', methods=['GET', 'POST'])
+@login_required
+@editor_permission.require(http_exception=401)
+def edit_post(postid):
+    post = Post.objects(id=postid).first()
+    if current_user != post.author:
+        abort(403)
+    form = PostForm()
+    if form.validate_on_submit():
+        post.content = form.content.data
+        post.title = form.title.data
+        # post.status = form.status.data
+        post.category = form.category.data.strip() if form.category.data.strip() else None
+        post.tags = [tag.strip() for tag in form.tags.data.split(',')] if form.tags.data else None 
+        if request.form.get('publish'):
+            post.status = '发布'
+            post.save()
+            flash('文章发布成功！')
+            return redirect(url_for('auth.manage_post', username=current_user.username))
+        elif request.form.get('draft'):
+            post.status = '草稿'
+            post.save()
+            flash('文章已保存到为草稿！')
+            return redirect(url_for('auth.draft_post', username=current_user.username))
+    form.title.data = post.title
+    form.content.data = post.content    
+    return render_template('auth/new_post.html', form=form, title='编辑文章"%s"' % post.title)
+

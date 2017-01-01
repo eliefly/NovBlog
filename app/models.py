@@ -123,8 +123,8 @@ class Post(db.Document):
     content_html = db.StringField(required=True)
     # status = db.StringField(required=True, choices=post_status)
     status = db.StringField(required=True)
-    publish_time = db.DateTimeField(default=datetime.now)
-    modifly_time = db.DateTimeField(default=datetime.now)
+    publish_time = db.DateTimeField()
+    modifly_time = db.DateTimeField()
     comments = db.ListField(db.EmbeddedDocumentField(Comment))
 
     # 想法：Post和图片可视作一对多关系，Image可直接在Post中放一个类似comments的字段

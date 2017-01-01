@@ -14,7 +14,7 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
     AVATER_FORMAT = list(['jpg', 'png', 'jpeg', 'bmp'])
     STATIC_FOLDER = '/home/eliefly/PycharmProjects/NovBlog/app/static'
-    POSTS_PER_PAGE = 10
+    POSTS_PER_PAGE = 15
 
     @staticmethod
     def init_app(app):
