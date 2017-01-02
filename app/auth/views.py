@@ -153,6 +153,8 @@ def upload(username):
 def new_post(username):
     user = User.objects.get_or_404(username=username)
     form = PostForm()
+    tags = Post.objects().distinct('tags')
+    categories = Post.objects().distinct('category')
     if form.validate_on_submit():
         post = Post(content=form.content.data)
         post.author = user
@@ -170,7 +172,7 @@ def new_post(username):
             post.save()
             flash('文章已保存到为草稿！')
         return redirect(url_for('auth.index'))
-    return render_template('auth/new_post.html', form=form, user=user, title='新建博客')
+    return render_template('auth/new_post.html', form=form, user=user, tags=tags, categories=categories, title='新建博客')
 
 
 @auth.route('/managepost/<username>', methods=['GET', 'POST'])
@@ -229,6 +231,8 @@ def edit_post(postid):
     if current_user != post.author:
         abort(403)
     form = PostForm()
+    tags = Post.objects().distinct('tags')
+    categories = Post.objects().distinct('category')
     if form.validate_on_submit():
         post.content = form.content.data
         post.title = form.title.data
@@ -246,6 +250,8 @@ def edit_post(postid):
             flash('文章已保存到为草稿！')
             return redirect(url_for('auth.draft_post', username=current_user.username))
     form.title.data = post.title
-    form.content.data = post.content    
-    return render_template('auth/new_post.html', form=form, title='编辑文章"%s"' % post.title)
+    form.content.data = post.content
+    form.tags.data = ','.join(post.tags)
+    form.category.data = post.category    
+    return render_template('auth/new_post.html', form=form, tags=tags, categories=categories, title='编辑文章"%s"' % post.title)
 

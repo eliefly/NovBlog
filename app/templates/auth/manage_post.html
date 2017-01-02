@@ -16,6 +16,8 @@
         <thead>
             <tr>
                 <th style="width: 30%">标题</th>
+                <th style="width: 10%">分类</th>
+                <th style="width: 10%">标签</th>
                 <th style="width: 10%">作者</th>
                 <th style="width: 10%">发布时间</th>
                 <th style="width: 10%">修改时间</th>
@@ -29,7 +31,9 @@
             <tr>
                 <td>
                     <a href="{{ url_for('main.get_post', id=post.id) }}">{{ post.title }}</a>
-                </td> 
+                </td>
+                <td>{{ post.category }}</td>
+                <td>{{ post.tags }}</td> 
                 <td>
                     <a href="{{ url_for('auth.user_profile', username=post.author.username) }}">{{ post.author.username }}</a>
                 </td> 

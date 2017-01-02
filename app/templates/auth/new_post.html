@@ -55,7 +55,7 @@
                         <div class="input-group">
                             {{ form.category(class_="form-control") }}
                             <div class="input-group-btn">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <span class="caretspan></button>
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <span class="caret"><span></button>
                                 <ul class="dropdown-menu dropdown-menu-right">
                                     {% for category in categories %}
                                         <li><a href="#" class="category-name" data-category="{{ category }}">{{ category }}</a></li>
@@ -85,27 +85,19 @@
 
 
 <script type="text/javascript">
-    // using jQuery
-    // wideArea();
-    
     $('.tag').on('click', function(event){
         var tag = $(this).data('tag');
-        // alert(category);
         var elem = document.getElementById("tags");
         if(elem.value==''){
         elem.value = tag;
     }else{
-    // elem.value += ', ';
-    // elem.value += tag;
     elem.value = [elem.value, tag].join(', ')
     }
-    // $(this).remove();
     return false
     });
 
     $('.category-name').on('click', function(event){
         var category = $(this).data('category');
-        // alert(category);
         var elem = document.getElementById("category");
         elem.value = category;
         return false

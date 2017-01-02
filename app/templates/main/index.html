@@ -5,7 +5,7 @@
     {% include '_posts.html' %}
     {% if pagination %}
         <div class="pagination">
-        {% import '_pagination.html' as macros %}
+            {% import '_pagination.html' as macros %}
             {{ macros.pagination_widget(pagination, 'main.index') }}
         </div>
     {% endif %}
@@ -13,9 +13,9 @@
 {% block slider %}
     <!-- Blog Search Well -->
     <div class="well">
-        <h4>Blog Search</h4>
+        <h4>检索</h4>
         <div class="input-group">
-            <input type="text" class="form-control">
+            <input type="search" class="form-control">
             <span class="input-group-btn">
                 <button class="btn btn-default" type="button">
                 <span class="glyphicon glyphicon-search"></span>
@@ -26,38 +26,29 @@
     </div>
     <!-- Blog Categories Well -->
     <div class="well">
-        <h4>Blog Categories</h4>
+        <h4>随笔分类</h4>
         <div class="row">
             <div class="col-lg-6">
                 <ul class="list-unstyled">
-                    <li><a href="#">Category Name</a>
-                </li>
-                <li><a href="#">Category Name</a>
-            </li>
-            <li><a href="#">Category Name</a>
-        </li>
-        <li><a href="#">Category Name</a>
-    </li>
-</ul>
-</div>
-<div class="col-lg-6">
-<ul class="list-unstyled">
-    <li><a href="#">Category Name</a>
-</li>
-<li><a href="#">Category Name</a>
-</li>
-<li><a href="#">Category Name</a>
-</li>
-<li><a href="#">Category Name</a>
-</li>
-</ul>
-</div>
-</div>
-<!-- /.row -->
-</div>
-<!-- Side Widget Well -->
-<div class="well">
-<h4>Side Widget Well</h4>
-<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, perspiciatis adipisci accusamus laudantium odit aliquam repellat tempore quos aspernatur vero.</p>
-</div>
+                {% for category in categories %}
+                    <li><a href="#">{{ category }}</a></li>
+                {% endfor %}
+                </ul>
+            </div>
+<!--             <div class="col-lg-6">
+                <ul class="list-unstyled">
+                    <li><a href="#">Category Name</a></li>
+                    <li><a href="#">Category Name</a></li>
+                    <li><a href="#">Category Name</a></li>
+                    <li><a href="#">Category Name</a></li>
+                </ul>
+            </div> -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- Side Widget Well -->
+    <div class="well">
+        <!-- <h4>Side Widget Well</h4>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, perspiciatis adipisci accusamus laudantium odit aliquam repellat tempore quos aspernatur vero.</p>
+    </div> -->
 {% endblock %}

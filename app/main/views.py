@@ -33,9 +33,10 @@ def index():
     pagination = Post.objects.order_by('-publish_time').paginate(
                 page, per_page=current_app.config['POSTS_PER_PAGE'], error_out=False)
     posts = pagination.items
+    categories = Post.objects.distinct('category')
 
     # posts = Post.objects().order_by('-publish_time').all()
-    return render_template('main/index.html', posts=posts, title='首页', pagination=pagination)
+    return render_template('main/index.html', posts=posts, title='首页', pagination=pagination, categories=categories)
 
 @main.route('/example')
 def post_example():
