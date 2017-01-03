@@ -131,7 +131,12 @@ class Post(db.Document):
     # Images = db.ListField(db.EmbeddedDocumentField(PostImage))
 
     meta = {'allow_inheritance': True,
-            'ordering': ['-publish_time']}
+            'ordering': ['-publish_time'],
+            'indexes': [
+                {'fields': ['$title', "$content"],
+                 'weights': {'title': 10, 'content': 2}
+                }]
+            }
 
     def save(self, allow_set_time=False, *args, **kwargs):
         ''' 覆写Post.save()方法，保存post时生成contnet_html字段'''

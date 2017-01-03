@@ -47,3 +47,15 @@ def post_example():
 def get_post(id):
     post = Post.objects(id=id).first()
     return render_template('main/post.html', post=post, title='NovBlog文章')
+
+
+@main.route('/posts/search/<text>', methods=['GET', 'POST'])
+def post_search(text):
+    page = request.args.get('page', 1, type=int)
+    pagination = Post.objects.search_text(text).order_by('-publish_time').paginate(
+                page, per_page=current_app.config['POSTS_PER_PAGE'], error_out=False)
+    posts = pagination.items
+    categories = Post.objects.distinct('category')
+
+    return render_template('main/index.html', posts=posts, title=text + '-找找看', head='检索结果',
+                pagination=pagination, categories=categories)

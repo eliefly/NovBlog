@@ -1,7 +1,11 @@
 {% extends "base.html" %}
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
-    <h1>所有文章</h1>
+    {% if head %}
+        <h1>{{ head }}</h1>
+    {% else %}
+        <h1>所有文章</h1>
+    {% endif %}
     {% include '_posts.html' %}
     {% if pagination %}
         <div class="pagination">
@@ -15,9 +19,9 @@
     <div class="well">
         <h4>检索</h4>
         <div class="input-group">
-            <input type="search" class="form-control">
+            <input type="search" class="form-control" id="input-search" name="{{ url_for('main.index') }}"/>
             <span class="input-group-btn">
-                <button class="btn btn-default" type="button">
+                <button class="btn btn-default" type="button" onclick="search()">
                 <span class="glyphicon glyphicon-search"></span>
                 </button>
             </span>
@@ -51,4 +55,14 @@
         <!-- <h4>Side Widget Well</h4>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, perspiciatis adipisci accusamus laudantium odit aliquam repellat tempore quos aspernatur vero.</p>
     </div> -->
+{% endblock %}
+{% block js %}
+<script type="text/javascript">
+    function search(){
+        var node = document.getElementById('input-search');
+        var text = node.value;
+        var url = node.name;
+        window.location= url + "posts/search/" + text;  //暂时先这么实现吧
+    }
+</script>
 {% endblock %}
