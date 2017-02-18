@@ -30,8 +30,7 @@
 
 
 
-5）运行Flask程序，如下就可在浏览器通过http://127.0.0.1:5000/ 访问NovBlog
-
+5）运行Flask程序，如下就可在浏览器通过http://127.0.0.1:5000/auth 访问NovBlog管理页
 ```
 
 $ python manage.py runserver
@@ -46,7 +45,7 @@ $ python manage.py runserver
 
 ```
 
-#### 2.将NovBlog部署在腾讯云上，可访问http://139.199.191.60/ 查看（主机到期可能挂掉。。）
+#### 2.将NovBlog部署在腾讯云上，可访问http://139.199.191.60/auth 查看（主机到期可能挂掉。。）
 
 部署过程：[腾讯云Unubtu 16.04 （gunicorn+supervisor+ngnix+mongodb）部署Flask应用](http://www.cnblogs.com/elie/p/6341680.html)
 
