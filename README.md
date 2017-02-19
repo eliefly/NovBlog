@@ -1,5 +1,6 @@
 ### NovBlog
 
+#### 开发平台信息
 系统环境：Ubuntu 16.04
 Python版本：Python 3.5.2
 数据库：MongoDB
