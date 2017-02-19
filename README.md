@@ -1,8 +1,10 @@
 ###NovBlog
+
 系统环境：Ubuntu 16.04
 Python版本：Python 3.5.2
 数据库：MongoDB
 Flask版本：Flask (0.12)
+
 #### 1.如何在本地运行NovBlog
 
 1）克隆代码到本地
@@ -46,25 +48,8 @@ $ python manage.py runserver
 
 ```
 
-#### 2.将NovBlog部署在腾讯云上，可访问http://139.199.191.60/auth 查看（主机到期可能挂掉。。）
+#### 2.将NovBlog部署在腾讯云上，可访问http://139.199.191.60/auth 查看（主机到期挂掉后，可能无法访问）
 
 部署过程：[腾讯云Unubtu 16.04 （gunicorn+supervisor+ngnix+mongodb）部署Flask应用](http://www.cnblogs.com/elie/p/6341680.html)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
