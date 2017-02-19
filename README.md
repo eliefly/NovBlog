@@ -1,10 +1,10 @@
 ### NovBlog
-
-#### 开发平台信息
+```
 系统环境：Ubuntu 16.04
 Python版本：Python 3.5.2
 数据库：MongoDB
 Flask版本：Flask (0.12)
+```
 
 #### 1.如何在本地运行NovBlog
 
